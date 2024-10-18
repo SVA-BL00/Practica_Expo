@@ -1,1 +1,1 @@
-Simplemente correr ```npx expo start``` y escanear el çódigo con la aplicación Expo Go.
+Simplemente correr ```npx expo start``` y escanear el código con la aplicación Expo Go.
