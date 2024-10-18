@@ -1,37 +1,88 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { useState } from 'react';
+import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import Slider from '@react-native-community/slider';
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const { height, width } = Dimensions.get('window');
+
+const calculateBrightness = (hexColor: string): string => {
+  const r = parseInt(hexColor.slice(1, 3), 16);
+  const g = parseInt(hexColor.slice(3, 5), 16);
+  const b = parseInt(hexColor.slice(5, 7), 16);
+  const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+  return brightness > 186 ? 'black' : 'white';
+};
+
+const rgbToHex = (r: number, g: number, b: number): string => {
+  return '#' + [r, g, b]
+    .map(x => Math.round(x).toString(16).padStart(2, '0'))
+    .join('');
+};
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+  const [sliderValueR, setSliderValueR] = useState(0);
+  const [sliderValueG, setSliderValueG] = useState(0);
+  const [sliderValueB, setSliderValueB] = useState(0);
+  
+  const backgroundColor = rgbToHex(sliderValueR, sliderValueG, sliderValueB);
+  const textColor = calculateBrightness(backgroundColor);
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+    <View style={[styles.container, { backgroundColor }]}>
+      <Text style={[styles.text, { color: textColor }]}>Home Screen</Text>
+      <View style={styles.sContainer}>
+        <Text style={{ color: 'red', margin: 5 }}>Red</Text>
+        <Text style={{margin: 5 }}>{sliderValueR}</Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={255}
+          minimumTrackTintColor="#000000"
+          maximumTrackTintColor="#000000"
+          step={1}
+          value={sliderValueR}
+          onValueChange={setSliderValueR}
+        />
+        <Text style={{ color: 'green', margin: 5 }}>Green</Text>
+        <Text style={{margin: 5 }}>{sliderValueG}</Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={255}
+          minimumTrackTintColor="#000000"
+          maximumTrackTintColor="#000000"
+          step={1}
+          value={sliderValueG}
+          onValueChange={setSliderValueG}
+        />
+        <Text style={{ color: 'blue', margin: 5 }}>Blue</Text>
+        <Text style={{margin: 5 }}>{sliderValueB}</Text>
+        <Slider
+          style={{ width: 200, height: 40 }}
+          minimumValue={0}
+          maximumValue={255}
+          minimumTrackTintColor="#000000"
+          maximumTrackTintColor="#000000"
+          step={1}
+          value={sliderValueB}
+          onValueChange={setSliderValueB}
+        />
+      </View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    height: height,
+    width: width,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 24,
+  },
+  sContainer:{
+    backgroundColor: 'white',
+    margin: 10,
+  }
+});
